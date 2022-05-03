@@ -12,7 +12,7 @@ class Unidades extends BaseController
 
     public function __construct()
     {
-        $this->session = session();
+        //$this->session = session();
         $this->unidades = new UnidadesModel();
         helper(['form']);
 
@@ -28,9 +28,9 @@ class Unidades extends BaseController
     public function index($activo = 1)
     {
         //Si no existe una variable de sesión - Valida las sesiones
-        if (!isset($this->session->id_usuario)) {
+        /*if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
-        }
+        }*/
         $unidades = $this->unidades->where('activo', $activo)->findAll();
         $data = ['titulo' => 'Unidades', 'datos' => $unidades];
 

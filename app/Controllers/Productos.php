@@ -15,7 +15,8 @@ class Productos extends BaseController
 
     public function __construct()
     {
-        $this->session = session();
+        //EVALUA SI ESTÁ EN UNA SESIÓN
+        //$this->session = session();
         $this->productos = new ProductosModel();
         $this->unidades = new UnidadesModel();
         $this->categorias = new CategoriasModel();
@@ -49,17 +50,16 @@ class Productos extends BaseController
     public function index($activo = 1)
     {
         //Valido el acceso a los roles
-        $permiso = $this->detalleRoles->verificaPermisos($this->session->id_rol, 'ProductosCatalogo');
-
+        /*$permiso = $this->detalleRoles->verificaPermisos($this->session->id_rol, 'ProductosCatalogo');
         if (!$permiso) {
-            echo 'no tiene permiso';
+            echo 'No tiene permiso';
             exit;
         }
 
         //Si no existe una variable de sesión - Valida las sesiones
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
-        }
+        }*/
         //Consulta que trae todos los productos de la BDD
         $productos = $this->productos->where('activo', $activo)->findAll();
         $data = ['titulo' => 'Productos', 'datos' => $productos];
@@ -91,7 +91,10 @@ class Productos extends BaseController
     public function insertar()
     {
         if ($this->request->getMethod() == "post" && $this->validate($this->reglas)) {
-            $this->productos->save([
+
+
+
+            $message = $this->productos->save([
                 'codigo' => $this->request->getPost('codigo'),
                 'nombre' => $this->request->getPost('nombre'),
                 'precio_venta' => $this->request->getPost('precio_venta'),
@@ -101,9 +104,19 @@ class Productos extends BaseController
                 'id_unidad' => $this->request->getPost('id_unidad'),
                 'id_categoria' => $this->request->getPost('id_categoria')
             ]);
+            if ($message) {
+                echo "Mesaje: " . $message;
+            } else {
+                echo "Mesaje: " . $message;
+            }
+            //IMPRIME EL POST
+            print_r($_POST);
+
+
 
             //Guardo el ID del producto ingresado
             $id = $this->productos->insertID();
+
 
             $validacion = $this->validate([
                 'img_producto' => [
@@ -112,6 +125,7 @@ class Productos extends BaseController
                     'max_size[img_producto, 4096]'
                 ]
             ]);
+
             if ($validacion) {
                 $ruta_logo = "images/productos/" . $id . ".jpg";
                 if (file_exists($ruta_logo)) {
@@ -122,6 +136,7 @@ class Productos extends BaseController
             } else {
                 echo 'ERROR en la validación';
             }
+
 
 
 
